@@ -1,0 +1,13 @@
+lexical analyzer breaks up code into tokens
+
+semantic analyzer will check data types for overloaded operators
+
+should make a state matrix based upon current state and input
+
+N:
+    n d q s
+  0 1 2 3 4
+  1 2 3 6 1
+  ...
+
+with current state and a specific input, we can determine the next state
