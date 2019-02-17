@@ -127,13 +127,14 @@ class Lexer:
         self.traverse_file_for_tokens("program.txt")
 
     def __str__(self):
-        result = "Tokens: " + str(len(self.token_list)) + '\n'
+        result = '\n'
+        result += "Tokens: " + str(len(self.token_list)) + "\t\t Lexemes" + '\n'
         for x in range(len(self.token_list)):
-            result += str(self.token_list[x].lexeme)
-            if (len(str(self.token_list[x].lexeme)) <= 3):
+            result += str(self.token_list[x].token_type)
+            if (str(self.token_list[x].token_type)) == "Keyword":
                 result += "\t"
             result += "\t\t "
-            result += self.token_list[x].token_type + '\n'
+            result += self.token_list[x].lexeme + '\n'
         return result
 
 
