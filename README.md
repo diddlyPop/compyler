@@ -12,3 +12,4 @@ run from terminal instructions for lexical analyzer:
     "python lex.py" or "python3 lex.py"
     
     if you need to analyze a new file, change program.txt to new RAT source file
+    adding feature to pass in or select your own text file to test against
