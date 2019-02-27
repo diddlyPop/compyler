@@ -115,7 +115,8 @@ class Lexer:
         self.accepting_states = {}
         self.separator_list = {'{', '}', '[', ']', ',', ':', ';', '(', ')'}
         self.operator_list = {'<', '>', '=', '+', '-'}
-        self.keyword_list = ["int", "string"]
+        self.keyword_list = ["int", "string", "float", "bool", "if", "else", "then", "do", "while", "whileend", "do",
+                             "doend", "for", "and", "or", "function"]
         self.state_table = [[1, 2, 7, 7, 3],
                             [3, 4, 7, 7, 7],   # accepted
                             [7, 2, 5, 7, 7],   # accepted int
