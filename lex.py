@@ -127,7 +127,8 @@ class Lexer:
         result += "Tokens: " + str(len(self.token_list)) + "\t\t Lexemes" + '\n'
         for x in range(len(self.token_list)):
             result += str(self.token_list[x].token_type)
-            if str(self.token_list[x].token_type) == "Keyword" or str(self.token_list[x].token_type) == "Integer":
+            if str(self.token_list[x].token_type) == "Keyword" or str(self.token_list[x].token_type) == "Integer" or \
+                    str(self.token_list[x].token_type) == "Real":
                 result += "\t"
             result += "\t\t "
             result += self.token_list[x].lexeme + '\n'
@@ -140,7 +141,8 @@ if __name__ == "__main__":
         if file_name[-4:] != ".txt":
             file_name = input("Input must be .txt file: ")
         if not os.path.isfile(file_name):
-            file_name = input("File doesn't exist. Enter new file: ")
+            print("File cannot be found in this directory.")
+            file_name = input("Enter new file: ")
     newLexer = Lexer(file_name)
     print(newLexer)
 
