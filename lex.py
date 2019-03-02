@@ -3,6 +3,8 @@ lex - creates tokens from keywords, identifiers, operators, numbers, and bracket
 """
 from enum import IntEnum, Enum
 import keyword
+import sys
+import os.path
 
 
 class Token:
@@ -90,12 +92,6 @@ class Lexer:
             trans_type = 2
         if current_character is '$':
             trans_type = 4
-        #if current_character is '<':
-        #    trans_type = 5
-        #if current_character is '>':
-        #    trans_type = 6
-        #if current_character is ';':
-        #    trans_type = 7
         return trans_type   # VERIFIED returns int
 
     def determine_type(self, prev_state):
@@ -110,7 +106,8 @@ class Lexer:
             token_type
         return token_type
 
-    def __init__(self):
+    def __init__(self, file_name):
+        self.file_to_check = file_name
         self.token_list = []
         self.accepting_states = {}
         self.separator_list = {'{', '}', '[', ']', ',', ':', ';', '(', ')'}
@@ -122,17 +119,18 @@ class Lexer:
                             [7, 2, 5, 7, 7],   # accepted int
                             [3, 4, 7, 7, 3],   # accepted
                             [3, 4, 7, 7, 3],
-                            [7, 6, 7, 7, 7],   # accepted reals?
+                            [7, 6, 7, 7, 7],   # accepted reals
                             [7, 6, 7, 7, 7],
                             [7, 7, 7, 7, 7]]
-        self.traverse_file_for_tokens("program.txt")
+        self.traverse_file_for_tokens(self.file_to_check)
 
     def __str__(self):
         result = '\n'
+        result += "Analyzing file " + self.file_to_check + '\n'
         result += "Tokens: " + str(len(self.token_list)) + "\t\t Lexemes" + '\n'
         for x in range(len(self.token_list)):
             result += str(self.token_list[x].token_type)
-            if (str(self.token_list[x].token_type)) == "Keyword":
+            if str(self.token_list[x].token_type) == "Keyword" or str(self.token_list[x].token_type) == "Integer":
                 result += "\t"
             result += "\t\t "
             result += self.token_list[x].lexeme + '\n'
@@ -140,6 +138,13 @@ class Lexer:
 
 
 if __name__ == "__main__":
-    newLexer = Lexer()
+    file_name = sys.argv[1]
+    while file_name[-4:] != ".txt" or not os.path.isfile(file_name):
+        if file_name[-4:] != ".txt":
+            file_name = input("Input must be .txt file: ")
+        if not os.path.isfile(file_name):
+            file_name = input("File doesn't exist. Enter new file: ")
+    newLexer = Lexer(file_name)
     print(newLexer)
+
 
