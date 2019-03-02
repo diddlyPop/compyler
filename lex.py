@@ -40,12 +40,9 @@ class Lexer:
         prev_state = 0
         lexeme = ""
         comment_separator_count = 0
-        o_file = open("output.txt", 'w')
         with open(file_name) as file_obj:
             for line in file_obj:            # increment through each line in file
                 for ch in line:             # to increment character by character, VERIFIED character recognition
-                    output_ch = ch
-                    o_file.write(output_ch)
                     if ch == '!':
                         comment_separator_count += 1
                     else:

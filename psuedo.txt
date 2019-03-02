@@ -11,3 +11,11 @@ N:
   ...
 
 with current state and a specific input, we can determine the next state
+
+
+
+________________________________________________________
+
+read character by character through our file
+    Lexer sends characters to Tokenizer
+        if ch is valid for current Token
