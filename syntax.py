@@ -6,9 +6,46 @@ from lex import *
 
 class Syntaxer:
 
-    def __init__(self, file_name):
-        aLexer = Lexer(file_name)
-        print(aLexer)
+    def E(self):
+        self.In('E')
+        self.Out('E')
+
+    def Q(self):
+        self.In('Q')
+        self.Out('Q')
+
+    def T(self):
+        self.In('T')
+        self.Out('T')
+
+    def R(self):
+        self.In('R')
+        self.Out('R')
+
+    def In(self, call_from):
+        self.Print_Tier()
+        self.tier += 1
+        print("Exit %c" % call_from)
+
+    def Out(self, call_from):
+        self.Print_Tier()
+        self.tier -= 1
+        print("Exit %c" % call_from)
+
+    def Print_Tier(self):
+        for i in range(self.tier):
+            print("-->")
+
+    def Fetch(self):
+        self.current_index += 1
+        self.current = self.s_token_list[self.current_index]
+
+    def __init__(self, f_name):
+        self.aLexer = Lexer(f_name)
+        self.s_token_list = self.aLexer.token_list
+        self.current = self.s_token_list[0]
+        self.current_index = 0
+        self.tier = 0
 
     def __str__(self):
         result = '\n'
