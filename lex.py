@@ -12,6 +12,7 @@ class Token:
     def __init__(self, t_lexeme, t_type):
         self.lexeme = t_lexeme                     # value of token
         self.token_type = t_type      # type of token (keyword, number, etc.)
+        self.rules_used = ""
 
 
 class State(IntEnum):
