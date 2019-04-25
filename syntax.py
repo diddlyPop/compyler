@@ -2,25 +2,60 @@
 syntax - analyzes and verifies the structure of our Token list
 """
 from lex import *
+import sys
 
 
 class Syntaxer:
 
-    def E(self):
+    def S(self):        # S -> i = E
+        self.In('S')
+        self.Out('S')
+
+    def E(self):        # E -> TQ
         self.In('E')
+        self.T()
+        self.Q()
         self.Out('E')
 
-    def Q(self):
+    def Q(self):        # Q -> +TQ | -TQ | sigma
         self.In('Q')
+        if self.current.token_lexeme is '+':
+            self.Check_and_Fetch('+')
+            self.T()
+            self.Q()
+        elif self.current.token_lexeme is '-':
+            self.Check_and_Fetch('-')
+            self.T()
+            self.Q()
+        else:
+            return None
+            # TODO sigma
         self.Out('Q')
 
-    def T(self):
+    def T(self):        # T -> FR
         self.In('T')
+        self.F()
+        self.R()
         self.Out('T')
 
-    def R(self):
+    def R(self):        # R -> *FR | /FR | sigma
         self.In('R')
+        if self.current.token_lexeme is '*':
+            self.Check_and_Fetch('*')
+            self.T()
+            self.Q()
+        elif self.current.token_lexeme is '/':
+            self.Check_and_Fetch('/')
+            self.T()
+            self.Q()
+        else:
+            return None
+            # TODO sigma
         self.Out('R')
+
+    def F(self):        # F -> (E) | i
+        self.In('F')
+        self.Out('F')
 
     def In(self, call_from):
         self.Print_Tier()
@@ -36,9 +71,13 @@ class Syntaxer:
         for i in range(self.tier):
             print("-->")
 
-    def Fetch(self):
-        self.current_index += 1
-        self.current = self.s_token_list[self.current_index]
+    def Check_and_Fetch(self, check_against):
+        if self.current.token_lexeme is check_against:
+            self.current_index += 1
+            self.current = self.s_token_list[self.current_index]
+        else:
+            print("error fetching")
+            exit("error fetching")
 
     def __init__(self, f_name):
         self.aLexer = Lexer(f_name)
