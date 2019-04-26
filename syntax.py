@@ -25,10 +25,6 @@ class Syntaxer:
         self.Q()
         self.Out('E')
 
-    def E_Prime(self):
-        self.In("E_Prime")
-        self.Out("E_Prime")
-
     def Q(self):        # Q -> +TQ | -TQ | sigma
         if self.need_print:
             self.current.rules_used.append(self.rules_dict['Q'])
@@ -99,15 +95,17 @@ class Syntaxer:
         self.tier_print_result += '\n'
 
     def Error_Check(self):
-        for i in range(len(self.errors)):
-            print(self.errors[i])
+        if len(self.errors) >= 1:
+            for i in range(len(self.errors)):
+                print(self.errors[i])
+        else:
+            print("\nSyntax Passes!")
 
     def Start_Analyzing(self):
         while not self.end_of_list:
             self.S()
         self.Error_Check()
         print('\n' + self.tier_print_result)
-        print("Ended on lexeme: %s" % self.current.lexeme)
 
     def Check_and_Fetch(self, check_against):
         if self.current.lexeme is check_against or self.current.token_type is check_against:
@@ -116,7 +114,7 @@ class Syntaxer:
                 self.current.lexeme = ""
                 self.end_of_list = True
                 self.need_print = False
-                print("\nEnd of token list")
+                print("\nEnd of List")
             else:
                 self.Print_Token()
                 self.current_index += 1
