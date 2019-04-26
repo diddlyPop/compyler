@@ -12,7 +12,7 @@ class Token:
     def __init__(self, t_lexeme, t_type):
         self.lexeme = t_lexeme                     # value of token
         self.token_type = t_type      # type of token (keyword, number, etc.)
-        self.rules_used = ""
+        self.rules_used = []
 
 
 class State(IntEnum):
@@ -109,7 +109,7 @@ class Lexer:
         self.token_list = []
         self.accepting_states = {}
         self.separator_list = {'{', '}', '[', ']', ',', ':', ';', '(', ')'}
-        self.operator_list = {'<', '>', '=', '+', '-'}
+        self.operator_list = {'<', '>', '=', '+', '-', '*', '/'}
         self.keyword_list = ["int", "string", "float", "bool", "if", "else", "then", "do", "while", "whileend", "do",
                              "doend", "for", "and", "or", "function"]
         self.state_table = [[1, 2, 7, 7, 3],
