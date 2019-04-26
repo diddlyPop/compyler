@@ -9,6 +9,10 @@ class Syntaxer:
 
     def S(self):        # S -> i = E
         self.In('S')
+        if self.current.token_type == "Identifier":
+            self.Check_and_Fetch("Identifier")
+            self.Check_and_Fetch('=')
+            self.E()
         self.Out('S')
 
     def E(self):        # E -> TQ
@@ -17,13 +21,17 @@ class Syntaxer:
         self.Q()
         self.Out('E')
 
+    def E_Prime(self):
+        self.In("E_Prime")
+        self.Out("E_Prime")
+
     def Q(self):        # Q -> +TQ | -TQ | sigma
         self.In('Q')
-        if self.current.token_lexeme is '+':
+        if self.current.lexeme is '+':
             self.Check_and_Fetch('+')
             self.T()
             self.Q()
-        elif self.current.token_lexeme is '-':
+        elif self.current.lexeme is '-':
             self.Check_and_Fetch('-')
             self.T()
             self.Q()
@@ -40,11 +48,11 @@ class Syntaxer:
 
     def R(self):        # R -> *FR | /FR | sigma
         self.In('R')
-        if self.current.token_lexeme is '*':
+        if self.current.lexeme is '*':
             self.Check_and_Fetch('*')
             self.T()
             self.Q()
-        elif self.current.token_lexeme is '/':
+        elif self.current.lexeme is '/':
             self.Check_and_Fetch('/')
             self.T()
             self.Q()
@@ -58,23 +66,30 @@ class Syntaxer:
         self.Out('F')
 
     def In(self, call_from):
-        self.Print_Tier()
+        self.Print_Tier(call_from, "In")
         self.tier += 1
-        print("Exit %c" % call_from)
 
     def Out(self, call_from):
-        self.Print_Tier()
+        self.Print_Tier(call_from, "Out")
         self.tier -= 1
-        print("Exit %c" % call_from)
 
-    def Print_Tier(self):
-        for i in range(self.tier):
-            print("-->")
+    def Print_Tier(self, called_from, in_or_out):
+        tier_print_result = ""
+        for i in range(self.tier + 1):
+            tier_print_result += "--> "
+        tier_print_result += in_or_out + " "
+        tier_print_result += called_from
+        print(tier_print_result)
 
     def Check_and_Fetch(self, check_against):
-        if self.current.token_lexeme is check_against:
-            self.current_index += 1
-            self.current = self.s_token_list[self.current_index]
+        if self.current.lexeme is check_against or self.current.token_type is check_against:
+            if self.current_index == len(self.s_token_list) - 1:
+                self.end_of_list = True
+                print("end of token list")
+            else:
+                self.Print_Token()
+                self.current_index += 1
+                self.current = self.s_token_list[self.current_index]
         else:
             print("error fetching")
             exit("error fetching")
@@ -85,6 +100,8 @@ class Syntaxer:
         self.current = self.s_token_list[0]
         self.current_index = 0
         self.tier = 0
+        self.end_of_list = False
+        self.S()
 
     def __str__(self):
         result = '\n'
@@ -98,9 +115,16 @@ class Syntaxer:
             result += self.s_token_list[x].lexeme + '\n'
         return result
 
+    def Print_Token(self):
+        result = '\n'
+        result += "Token: %s \t" % self.current.token_type
+        result += "Lexeme: %s " % self.current.lexeme
+        result += '\n'
+        print(result)
+
 
 if __name__ == "__main__":
-    file_name = "input1.txt"
+    file_name = "input2.txt"
     if len(file_name) < 3:
         file_name = sys.argv[1]
         while file_name[-4:] != ".txt" or not os.path.isfile(file_name):
