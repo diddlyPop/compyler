@@ -7,71 +7,71 @@ import sys
 
 class Syntaxer:
 
-    def S(self):        # S -> i = E
+    def Statement(self):        # S -> i = E
         if self.need_print:
-            self.current.rules_used.append(self.rules_dict['S'])
+            self.current.rules_used.append(self.rules_dict['Statement'])
         self.In('S')
         if self.current.token_type == "Identifier":
             self.Check_and_Fetch("Identifier")
             self.Check_and_Fetch('=')
-            self.E()
+            self.Expression()
         self.Out('S')
 
-    def E(self):        # E -> TQ
+    def Expression(self):        # E -> TE'
         if self.need_print:
-            self.current.rules_used.append(self.rules_dict['E'])
+            self.current.rules_used.append(self.rules_dict['Expression'])
         self.In('E')
-        self.T()
-        self.Q()
+        self.Term()
+        self.Expression_Prime()
         self.Out('E')
 
-    def Q(self):        # Q -> +TQ | -TQ | sigma
+    def Expression_Prime(self):        # E' -> +TE' | -TE' | sigma
         if self.need_print:
-            self.current.rules_used.append(self.rules_dict['Q'])
+            self.current.rules_used.append(self.rules_dict['Expression_Prime'])
         self.In('Q')
         if self.current.lexeme is ';':
             self.Check_and_Fetch(';')
         elif self.current.lexeme is '+':
             self.Check_and_Fetch('+')
-            self.T()
-            self.Q()
+            self.Term()
+            self.Expression_Prime()
         elif self.current.lexeme is '-':
             self.Check_and_Fetch('-')
-            self.T()
-            self.Q()
+            self.Term()
+            self.Expression_Prime()
         self.Out('Q')
 
-    def T(self):        # T -> FR
+    def Term(self):        # T -> FT'
         if self.need_print:
-            self.current.rules_used.append(self.rules_dict['T'])
+            self.current.rules_used.append(self.rules_dict['Term'])
         self.In('T')
-        self.F()
-        self.R()
+        self.Factor()
+        self.Term_Prime()
         self.Out('T')
 
-    def R(self):        # R -> *FR | /FR | sigma
+    def Term_Prime(self):        # T' -> *FT' | /FT' | sigma
         if self.need_print:
-            self.current.rules_used.append(self.rules_dict['R'])
+            self.current.rules_used.append(self.rules_dict['Term_Prime'])
         self.In('R')
         if self.current.lexeme is ';':
             self.Check_and_Fetch(';')
         elif self.current.lexeme is '*':
             self.Check_and_Fetch('*')
-            self.T()
-            self.Q()
+            self.Term()
+            self.Expression_Prime()
         elif self.current.lexeme is '/':
             self.Check_and_Fetch('/')
-            self.T()
-            self.Q()
+            self.Term()
+            self.Expression_Prime()
         self.Out('R')
 
-    def F(self):        # F -> (E) | i
+    def Factor(self):        # F -> (E) | i
         if self.need_print:
-            self.current.rules_used.append(self.rules_dict['F'])
+            self.current.rules_used.append(self.rules_dict['Factor'])
         self.In('F')
         if self.current.lexeme is '(':
             self.Check_and_Fetch('(')
-            self.E()
+            self.Expression()
             self.Check_and_Fetch(')')
         elif self.current.token_type is "Identifier":
             self.Check_and_Fetch("Identifier")
@@ -103,7 +103,7 @@ class Syntaxer:
 
     def Start_Analyzing(self):
         while not self.end_of_list:
-            self.S()
+            self.Statement()
         self.Error_Check()
         print('\n' + self.tier_print_result)
 
@@ -139,8 +139,12 @@ class Syntaxer:
         self.end_of_list = False
         self.errors = []
         self.need_print = p_bool
-        self.rules_dict = {'S': "S -> i = E", 'E': "E -> TQ", 'T': "T -> FR", 'Q': "Q -> +TQ | -TQ | sigma",
-                                'F': "(E) | i", 'R': "R -> *FR | /FR | sigma"}
+        self.rules_dict = {'Statement': "<Statement> -> identifier = <Expression>",
+                           'Expression': "<Expression> -> <Term> <Expression_Prime>",
+                           'Term': "<Term> -> <Factor> <Term_Prime>",
+                           'Expression_Prime': "<Expression_Prime> -> + <Term> <Expression_Prime> | - <Term> <Expression_Prime> | sigma",
+                           'Factor': "(<Expression>) | identifier",
+                           'Term_Prime': "<Term_Prime> -> * <Factor> <Term_Prime> | / <Factor> <Term_Prime> | sigma"}
         self.tier_print_result = ""
 
     def __str__(self):
