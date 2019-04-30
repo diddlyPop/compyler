@@ -19,3 +19,16 @@ run from terminal instructions for lexical analyzer:
     Ex. of testing input2.txt:
         "python lex.py input2.txt"
         
+run from terminal instructions for syntax analyzer: 
+
+    "git clone https://github.com/diddlypop/compyler.git"
+    "cd compyler/"
+    "python syntax.py (file name)" or "python3 syntax.py (file name)"
+    
+    This program comes with a test file:
+        "input2.txt"
+        
+    If you would like to test against a new file, add into compyler/
+    
+    Ex. of testing input2.txt:
+        "python lex.py input2.txt"
