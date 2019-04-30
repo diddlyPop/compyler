@@ -168,7 +168,7 @@ if __name__ == "__main__":
             if file_name[-4:] != ".txt":
                 file_name = input("Input must be .txt file: ")
             if not os.path.isfile(file_name):
-                print("File cannot be found in this directory.")
+                print("File cannot be found in this directory.\ninput2.txt is a test file.")
                 file_name = input("Enter new file: ")
     aSyntaxer = Syntaxer(file_name, True)
     aSyntaxer.Start_Analyzing()
