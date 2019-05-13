@@ -3,8 +3,8 @@
 
  
 
-
-x=a + b;
-z=c+ d;
-a=e-f;
-b=g*n;
+a = b;
+x = c;
+while ( x < a ) {
+    x = x + 1;
+}

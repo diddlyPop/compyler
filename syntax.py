@@ -7,6 +7,92 @@ import sys
 
 class Syntaxer:
 
+    def File(self):         # F ->
+        if self.need_print:
+            self.current.rules_used.append(self.rules_dict['File'])
+        self.In('File')
+        while not self.end_of_list:
+            if self.current.lexeme == "while":
+                self.While()
+            if self.current.lexeme == "for":
+                self.For()
+            if self.current.lexeme == "if":
+                self.If()
+            if self.current.token_type == "Identifier":
+                self.Statement()
+        self.Out('File')
+
+    def While(self):        # W -> (P) {S}
+        if self.need_print:
+            self.current.rules_used.append(self.rules_dict['While'])
+        self.In('W')
+        if self.current.lexeme == "while":
+            self.Check_and_Fetch("while")
+            self.Check_and_Fetch('(')
+            self.Param()
+            self.Check_and_Fetch(')')
+            self.Check_and_Fetch('{')
+            self.Statement()
+            self.Check_and_Fetch('}')
+        self.Out('W')
+
+    def Param(self):        # P -> i > E | i < E
+        if self.need_print:
+            self.current.rules_used.append(self.rules_dict['Param'])
+        self.In('P')
+        if self.current.token_type == "Identifier":
+            self.Check_and_Fetch("Identifier")
+            self.Check_and_Fetch('Operator')
+            self.Expression()
+        if self.current.token_type == ';':
+            self.Check_and_Fetch(';')
+        self.Out('P')
+
+    def If(self):        # I -> (P) {S} | (P) {S} L
+        if self.need_print:
+            self.current.rules_used.append(self.rules_dict['If'])
+        self.In('I')
+        if self.current.lexeme == "if":
+            self.Check_and_Fetch("if")
+            self.Check_and_Fetch('(')
+            self.Param()
+            self.Check_and_Fetch(')')
+            self.Check_and_Fetch('{')
+            self.Statement()
+            self.Check_and_Fetch('}')
+        if self.current.lexeme == "else":
+            self.Check_and_Fetch("else")
+            self.Check_and_Fetch('{')
+            self.Statement()
+            self.Check_and_Fetch('}')
+        self.Out('I')
+
+    def For(self):        # For -> (S P C) {S}
+        if self.need_print:
+            self.current.rules_used.append(self.rules_dict['For'])
+        self.In('FOR')
+        if self.current.lexeme == "for":
+            self.Check_and_Fetch("for")
+            self.Check_and_Fetch('(')
+            self.Statement()
+            self.Param()
+            self.Counter()
+            self.Check_and_Fetch(')')
+            self.Check_and_Fetch('{')
+            self.Statement()
+            self.Check_and_Fetch('}')
+        self.Out('FOR')
+
+    def Counter(self):
+        if self.need_print:
+            self.current.rules_used.append(self.rules_dict['Counter'])
+        self.In('C')
+        if self.current.token_type == "Identifier":
+            self.Check_and_Fetch("Identifier")
+            self.Check_and_Fetch("Operator")
+            self.Check_and_Fetch("Operator")
+        self.Out('C')
+
     def Statement(self):        # S -> i = E
         if self.need_print:
             self.current.rules_used.append(self.rules_dict['Statement'])
@@ -81,10 +167,10 @@ class Syntaxer:
 
     def In(self, call_from):
         self.tier += 1
-        self.Print_Tier(call_from, "In")
+            #self.Print_Tier(call_from, "In")
 
     def Out(self, call_from):
-        self.Print_Tier(call_from, "Out")
+        # self.Print_Tier(call_from, "Out")
         self.tier -= 1
 
     def Print_Tier(self, called_from, in_or_out):
@@ -103,7 +189,7 @@ class Syntaxer:
 
     def Start_Analyzing(self):
         while not self.end_of_list:
-            self.Statement()
+            self.File()
         self.Error_Check()
         print('\n' + self.tier_print_result)
 
@@ -144,7 +230,14 @@ class Syntaxer:
                            'Term': "<Term> -> <Factor> <Term_Prime>",
                            'Expression_Prime': "<Expression_Prime> -> + <Term> <Expression_Prime> | - <Term> <Expression_Prime> | sigma",
                            'Factor': "(<Expression>) | identifier",
-                           'Term_Prime': "<Term_Prime> -> * <Factor> <Term_Prime> | / <Factor> <Term_Prime> | sigma"}
+                           'Term_Prime': "<Term_Prime> -> * <Factor> <Term_Prime> | / <Factor> <Term_Prime> | sigma",
+                           'While': "<While> -> (<Param>) {<Statement>}",
+                           'Param': "<Param> -> identifier <Operator> <Expression>",
+                           'If': "<If> -> (<Param>) {<Statement>} | (<Param>) {<Statement>} <Else>",
+                           'For': "<For> -> (<Statement> <Param> <Counter>) {<Statement>}",
+                           'Counter': "<Counter> -> identifier <Operator> <Operator>",
+                           'File': "<File> -> ANY"}
+
         self.tier_print_result = ""
 
     def __str__(self):
