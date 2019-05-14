@@ -161,6 +161,8 @@ class Syntaxer:
             self.Check_and_Fetch(')')
         elif self.current.token_type == "Identifier":
             self.Check_and_Fetch("Identifier")
+        elif self.current.token_type == "Integer":
+            self.Check_and_Fetch("Integer")
         else:
             self.errors.append("Error in F with %s " % self.current.lexeme)
         self.Out('F')
@@ -206,11 +208,6 @@ class Syntaxer:
                 self.current_index += 1
                 self.current = self.s_token_list[self.current_index]
         else:
-            if self.local_count == 0:
-                print(self.current.lexeme)
-                print('+')
-                print(check_against)
-                self.local_count += 1
             self.errors.append("Error finding %s" % self.current.lexeme)
 
     def Print_Token(self):
@@ -234,7 +231,7 @@ class Syntaxer:
                            'Expression': "<Expression> -> <Term> <Expression_Prime>",
                            'Term': "<Term> -> <Factor> <Term_Prime>",
                            'Expression_Prime': "<Expression_Prime> -> + <Term> <Expression_Prime> | - <Term> <Expression_Prime> | sigma",
-                           'Factor': "(<Expression>) | identifier",
+                           'Factor': "(<Expression>) | identifier | integer",
                            'Term_Prime': "<Term_Prime> -> * <Factor> <Term_Prime> | / <Factor> <Term_Prime> | sigma",
                            'While': "<While> -> (<Param>) {<Statement>}",
                            'Param': "<Param> -> identifier <Operator> <Expression>",
