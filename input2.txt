@@ -1,10 +1,10 @@
 
 ! this is comment for this sample test code the %% is optional to start!
 
- 
+
 
 a = b;
 x = c;
-while ( x < a ) {
-    x = x + 1;
+while ( a < b ) {
+    x = x + b;
 }
