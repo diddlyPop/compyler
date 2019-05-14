@@ -44,7 +44,7 @@ class Syntaxer:
             self.Check_and_Fetch("Identifier")
             self.Check_and_Fetch('Operator')
             self.Expression()
-        if self.current.token_type == ';':
+        if self.current.lexeme == ';':
             self.Check_and_Fetch(';')
         self.Out('P')
 
@@ -115,13 +115,13 @@ class Syntaxer:
         if self.need_print:
             self.current.rules_used.append(self.rules_dict['Expression_Prime'])
         self.In('Q')
-        if self.current.lexeme is ';':
+        if self.current.lexeme == ';':
             self.Check_and_Fetch(';')
-        elif self.current.lexeme is '+':
+        elif self.current.lexeme == '+':
             self.Check_and_Fetch('+')
             self.Term()
             self.Expression_Prime()
-        elif self.current.lexeme is '-':
+        elif self.current.lexeme == '-':
             self.Check_and_Fetch('-')
             self.Term()
             self.Expression_Prime()
@@ -139,13 +139,13 @@ class Syntaxer:
         if self.need_print:
             self.current.rules_used.append(self.rules_dict['Term_Prime'])
         self.In('R')
-        if self.current.lexeme is ';':
+        if self.current.lexeme == ';':
             self.Check_and_Fetch(';')
-        elif self.current.lexeme is '*':
+        elif self.current.lexeme == '*':
             self.Check_and_Fetch('*')
             self.Term()
             self.Expression_Prime()
-        elif self.current.lexeme is '/':
+        elif self.current.lexeme == '/':
             self.Check_and_Fetch('/')
             self.Term()
             self.Expression_Prime()
@@ -155,11 +155,11 @@ class Syntaxer:
         if self.need_print:
             self.current.rules_used.append(self.rules_dict['Factor'])
         self.In('F')
-        if self.current.lexeme is '(':
+        if self.current.lexeme == '(':
             self.Check_and_Fetch('(')
             self.Expression()
             self.Check_and_Fetch(')')
-        elif self.current.token_type is "Identifier":
+        elif self.current.token_type == "Identifier":
             self.Check_and_Fetch("Identifier")
         else:
             self.errors.append("Error in F with %s " % self.current.lexeme)
@@ -194,7 +194,7 @@ class Syntaxer:
         print('\n' + self.tier_print_result)
 
     def Check_and_Fetch(self, check_against):
-        if self.current.lexeme is check_against or self.current.token_type is check_against:
+        if self.current.lexeme == check_against or self.current.token_type == check_against:
             if self.current_index == len(self.s_token_list) - 1:
                 self.Print_Token()
                 self.current.lexeme = ""
@@ -206,6 +206,11 @@ class Syntaxer:
                 self.current_index += 1
                 self.current = self.s_token_list[self.current_index]
         else:
+            if self.local_count == 0:
+                print(self.current.lexeme)
+                print('+')
+                print(check_against)
+                self.local_count += 1
             self.errors.append("Error finding %s" % self.current.lexeme)
 
     def Print_Token(self):
@@ -239,6 +244,7 @@ class Syntaxer:
                            'File': "<File> -> ANY"}
 
         self.tier_print_result = ""
+        self.local_count = 0
 
     def __str__(self):
         result = '\n'
