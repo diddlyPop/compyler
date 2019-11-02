@@ -5,6 +5,8 @@ building a compiler from scratch in python
 
 requires python OR python3 installed
 
+currently can do lexical and syntactical analysis, needs semantic analysis
+
 run from terminal instructions for lexical analyzer: 
 
     "git clone https://github.com/diddlypop/compyler.git"
